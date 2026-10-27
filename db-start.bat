@@ -1,9 +1,8 @@
 @echo off
 chcp 65001 >nul
-echo ===== 启动 WSL 里的 MySQL =====
-wsl -d Ubuntu -e bash -c "sudo service mysql start"
+title 启动 wordbook 数据库（Windows MySQL 8.4.6）
+
+echo ===== 启动 C:\dev\mysql 上的 MySQL =====
+echo 注意：这个窗口不能关，关掉数据库就停了。
 echo.
-echo ===== 确认能连上（版本 + 现有数据库）=====
-wsl -d Ubuntu -e bash -c "mysql -uroot -proot123456 -e 'select version(); show databases;'"
-echo.
-pause
+call "C:\dev\mysql\start-mysql.bat"
