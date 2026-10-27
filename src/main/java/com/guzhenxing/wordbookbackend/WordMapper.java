@@ -57,6 +57,26 @@ public interface WordMapper {
     int updateStatus(@Param("word") String word, @Param("status") String status);
 
     /**
+     * 存一次作答结果：'记得' / '不记得' / ''（清空）。
+     *
+     * 这里存的不是「状态」而是「值」—— 和 status 那个 learning/mastered 不一样：
+     * status 是可开可关的标记，result 是这张卡上一次的答案。所以不搞 /remembered、/forgotten
+     * 这种路径，就是一个字段改值。
+     */
+    @Update("UPDATE words SET result = #{result} WHERE word = #{word}")
+    int updateResult(@Param("word") String word, @Param("result") String result);
+
+    /**
+     * 把所有结果清空，对应「重新背一遍」。
+     *
+     * 注意这里是 UPDATE 而不是 DELETE ——result 只是字段被清空，
+     * 整行数据（单词、释义、例句）一根毫毛都不动。千万别写 DELETE。
+     */
+    @Update("UPDATE words SET result = ''")
+    int resetResults();
+
+
+    /**
      * 加一个词。
      *
      * #{word} 是「取参数对象的 word 属性」，不是字符串拼接 —— 它底层用的是 PreparedStatement 的 ?，

@@ -69,6 +69,8 @@ curl http://127.0.0.1:8080/api/words
 | POST | `/api/words` | 新增单词，重复词返回 **409** |
 | PUT | `/api/words/{word}/mastered` | 标记为已掌握 |
 | DELETE | `/api/words/{word}/mastered` | 取消已掌握 |
+| PUT | `/api/words/{word}/result` | 存一次作答结果，body `{"result":"记得"}` |
+| DELETE | `/api/words/results` | 清空所有作答结果（对应「重新背一遍」） |
 | GET | `/api/notes` | 全部笔记 |
 | POST | `/api/notes` | 新增笔记，重复返回 **409** |
 | DELETE | `/api/notes/{word}` | 删除笔记 |

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class WordController {
@@ -75,5 +76,33 @@ public class WordController {
     @DeleteMapping("/api/words/{word}/mastered")
     public void unmarkMastered(@PathVariable String word) {
         wordMapper.updateStatus(word, "learning");
+    }
+
+    /**
+     * 存一次作答结果。
+     *
+     * 参数用 Map 而不是新建一个类，因为只传一个字段 —— 为一个 String 建一个 DTO 不划算。
+     * 前端发的是 {"result":"记得"}，@RequestBody 把它变成一个 Map，
+     * getOrDefault 保证前端漏传时不会给你一个 null 塞进数据库。
+     *
+     * 注意路径和 /{word}/mastered 的差别：
+     *   mastered 是个「有/没有」的标记 → PUT 打上、DELETE 拿掉
+     *   result   是个「什么值」的字段 → 只有一个 PUT，改值
+     */
+    @PutMapping("/api/words/{word}/result")
+    public void saveResult(@PathVariable String word, @RequestBody Map<String, String> body) {
+        wordMapper.updateResult(word, body.getOrDefault("result", ""));
+    }
+
+    /**
+     * 清空所有作答结果，对应前端的「重新背一遍」。
+     *
+     * 为什么放在 /api/words/results 而不是 /api/words/{word}/result：
+     * 它作用的对象是「所有结果」这个集合，不是某一个词。
+     * 用 DELETE 是因为结果被清除，但单词本身（整行数据）还在 —— 清的是字段，不是记录。
+     */
+    @DeleteMapping("/api/words/results")
+    public void resetResults() {
+        wordMapper.resetResults();
     }
 }
