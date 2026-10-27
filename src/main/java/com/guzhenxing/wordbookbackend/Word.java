@@ -24,6 +24,10 @@ public class Word {
     private String result = "";
     private boolean expanded = false;
 
+    // 单词的状态：learning（在背） / mastered（已掌握）。
+    // 「已掌握」不再是一个独立的数组或表，就是这一列的值
+    private String status = "learning";
+
     // 无参构造：第 4 步接收前端发来的 JSON 时，Jackson 要先用它造个空对象
     public Word() {
     }
@@ -83,5 +87,13 @@ public class Word {
 
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

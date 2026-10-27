@@ -32,5 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 
-### 本地数据库文件（已改用 WSL 里的 MySQL，这个目录是 H2 遗留）
+### 本地数据库文件（已改用 MySQL，这个目录是 H2 遗留）
 data/
+
+### 前端打包产物：npm run build 生成后拷进来的东西，随时能重新生成
+### 构建产物不入版本库 —— 它由源码决定，存进 git 只会让每次提交产生巨大 diff
+src/main/resources/static/
+
+### 手测接口用的临时请求体（我自己建的，不该进仓库）
+post-word.json

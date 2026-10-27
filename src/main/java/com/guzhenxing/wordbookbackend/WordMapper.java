@@ -3,7 +3,9 @@ package com.guzhenxing.wordbookbackend;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -29,8 +31,30 @@ public interface WordMapper {
      * 所以 SELECT 出来的列必须和 Word 的字段名对得上 —— 少写一列，那个字段就是 null，
      * 而且不报错。这是 MyBatis 最典型的坑，和之前「JSON 键名写错不报错」是同一类。
      */
-    @Select("SELECT id, word, meaning, example, result, expanded FROM words ORDER BY id")
+    @Select("SELECT id, word, meaning, example, result, expanded, status FROM words ORDER BY id")
     List<Word> findAll();
+
+    /**
+     * 按单词查一条，查不到返回 null。
+     *
+     * 注意：words 表的排序规则是 utf8mb4_unicode_ci（ci = case insensitive，不区分大小写），
+     * 所以 WHERE word = 'Abandon' 能匹配到 'abandon' —— 和唯一键 uk_word 的判定规则一致。
+     * 这点很重要：如果查询区分大小写、唯一键不区分，就会出现「查不到 → 去插 → 被唯一键拦住」的怪事。
+     */
+    @Select("SELECT id, word, meaning, example, result, expanded, status FROM words WHERE word = #{word}")
+    Word findByWord(String word);
+
+    /**
+     * 改状态：在背 ↔ 已掌握。
+     *
+     * 【这里有两个参数，所以必须写 @Param】
+     * MyBatis 只有一个参数时，你在 SQL 里写 #{随便什么} 都能拿到；
+     * 但一旦是两个以上，它就没法靠名字猜了（Java 编译后会丢掉参数名，
+     * 通常变成 arg0、arg1）。@Param("word") 就是亲手把名字钉上去。
+     * 忘了写的结果不是报错，而是启动时报 BindingException —— 早发现，别怕。
+     */
+    @Update("UPDATE words SET status = #{status} WHERE word = #{word}")
+    int updateStatus(@Param("word") String word, @Param("status") String status);
 
     /**
      * 加一个词。
