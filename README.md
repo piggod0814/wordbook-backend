@@ -1,7 +1,7 @@
 # 背单词本 · 后端
 
 一个用来背单词的小项目后端：单词增删查、笔记、已掌握标记，数据存 MySQL。
-配合前端仓库 [vue3-demo](../vue3-demo) 使用（实际地址填你自己的前端仓库链接）。
+配合前端仓库 [piggod0814/wordbook](https://github.com/piggod0814/wordbook) 使用。
 
 ## 技术栈
 
